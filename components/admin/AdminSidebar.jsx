@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { href: "/admin/pages", label: "Pages" },
   { href: "/admin/banners", label: "Banners" },
   { href: "/admin/activity", label: "Activity Log" },
+  { href: "/admin/homepage-sections", label: "Homepage Sections" },
 ];
 
 export default function AdminSidebar() {

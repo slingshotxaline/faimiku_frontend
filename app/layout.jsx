@@ -3,7 +3,7 @@ import AuthBootstrapMount from "../components/shared/AuthBootstrapMount";
 import "../styles/globals.css";
 
 export const metadata = {
-  title: "Enterprise Store",
+  title: "Faimiku",
   description: "Modern Next.js e-commerce platform",
 };
 
