@@ -14,6 +14,8 @@ import {
   useCreateGuestOrderMutation,
 } from "../../../features/orders/ordersApi";
 import { useGetActiveShippingZonesQuery } from "../../../features/shipping/shippingApi";
+import { useGetMeQuery } from "../../../features/auth/authApi";
+import { useInitiatePaymentMutation } from "../../../features/payment/paymentApi";
 import { setCredentials } from "../../../features/auth/authSlice";
 import { setAccessToken } from "../../../services/apiClient";
 
@@ -25,8 +27,11 @@ export default function CartPage() {
   const [createOrder, { isLoading: isPlacingOrder }] = useCreateOrderMutation();
   const [createGuestOrder, { isLoading: isPlacingGuestOrder }] =
     useCreateGuestOrderMutation();
+  const [initiatePayment, { isLoading: isInitiatingPayment }] =
+    useInitiatePaymentMutation();
   const { data: zonesData, isLoading: isLoadingZones } =
     useGetActiveShippingZonesQuery();
+  const { data: meData } = useGetMeQuery(undefined, { skip: !isAuthenticated });
 
   const [couponCode, setCouponCode] = useState("");
   const [shippingAddress, setShippingAddress] = useState({
@@ -43,18 +48,37 @@ export default function CartPage() {
 
   const zones = zonesData?.data || [];
 
-  // Pre-select the zone the admin marked as default (see ShippingZone.isDefault)
-  // once the list loads, so the person isn't forced to click something obvious.
   useEffect(() => {
     if (!shippingZoneId && zones.length) {
       setShippingZoneId((zones.find((z) => z.isDefault) || zones[0])._id);
     }
   }, [zones, shippingZoneId]);
 
+  useEffect(() => {
+    const defaultAddress = meData?.data?.user?.addresses?.find(
+      (a) => a.isDefault
+    );
+    if (defaultAddress) {
+      setShippingAddress((prev) =>
+        prev.fullName
+          ? prev
+          : {
+              fullName: defaultAddress.fullName || "",
+              phone: defaultAddress.phone || "",
+              street: defaultAddress.street || "",
+              city: defaultAddress.city || "",
+              district: defaultAddress.district || "",
+              postalCode: defaultAddress.postalCode || "",
+            }
+      );
+    }
+  }, [meData]);
+
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const selectedZone = zones.find((z) => z._id === shippingZoneId);
   const shippingEstimate = selectedZone?.charge ?? 0;
-  const isPlacingAnyOrder = isPlacingOrder || isPlacingGuestOrder;
+  const isPlacingAnyOrder =
+    isPlacingOrder || isPlacingGuestOrder || isInitiatingPayment;
 
   if (!items.length)
     return (
@@ -83,16 +107,35 @@ export default function CartPage() {
       couponCode: couponCode || undefined,
     };
 
+    const proceedToPaymentOrOrder = async (orderId) => {
+      if (paymentMethod === "cod") {
+        router.push(`/orders/${orderId}`);
+        return;
+      }
+      try {
+        const result = await initiatePayment({ orderId }).unwrap();
+        if (result.data.redirectUrl) {
+          window.location.href = result.data.redirectUrl;
+        } else {
+          router.push(`/orders/${orderId}`);
+        }
+      } catch (err) {
+        setError(
+          err?.data?.message ||
+            "Order placed, but payment could not be started. You can retry from your order page."
+        );
+        router.push(`/orders/${orderId}`);
+      }
+    };
+
     try {
       if (isAuthenticated) {
         const order = await createOrder(orderPayload).unwrap();
         dispatch(clearCart());
-        router.push(`/orders/${order.data._id}`);
+        await proceedToPaymentOrOrder(order.data._id);
         return;
       }
 
-      // Guest checkout: reuses the name/phone already collected in the
-      // shipping address form below — no separate account creation step.
       if (!shippingAddress.fullName || !shippingAddress.phone) {
         setError("Full name and phone number are required to place an order.");
         return;
@@ -104,9 +147,6 @@ export default function CartPage() {
         ...orderPayload,
       }).unwrap();
 
-      // The backend created/found an account for this phone number and
-      // issued a session for it — sync that into the frontend so the person
-      // is now "logged in" as their own order history without doing anything.
       dispatch(
         setCredentials({
           user: result.data.user,
@@ -116,7 +156,7 @@ export default function CartPage() {
       setAccessToken(result.data.accessToken);
 
       dispatch(clearCart());
-      router.push(`/orders/${result.data.order._id}`);
+      await proceedToPaymentOrOrder(result.data.order._id);
     } catch (err) {
       setError(
         err?.data?.message ||
@@ -303,7 +343,7 @@ export default function CartPage() {
 
         <h2 className="font-medium pt-2">Payment Method</h2>
         <div className="flex gap-3">
-          {["cod", "sslcommerz"].map((method) => (
+          {["cod", "bkash", "sslcommerz"].map((method) => (
             <button
               key={method}
               onClick={() => setPaymentMethod(method)}
@@ -313,7 +353,11 @@ export default function CartPage() {
                   : "border-gray-200"
               }`}
             >
-              {method === "cod" ? "Cash on Delivery" : "SSLCommerz"}
+              {method === "cod"
+                ? "Cash on Delivery"
+                : method === "bkash"
+                ? "bKash"
+                : "Card / SSLCommerz"}
             </button>
           ))}
         </div>
@@ -326,7 +370,11 @@ export default function CartPage() {
         disabled={isPlacingAnyOrder}
         className="mt-6 w-full bg-brand-500 hover:bg-brand-600 text-white py-3 rounded-lg font-medium disabled:opacity-50"
       >
-        {isPlacingAnyOrder ? "Placing order..." : "Place Order"}
+        {isPlacingAnyOrder
+          ? "Placing order..."
+          : paymentMethod === "cod"
+          ? "Place Order"
+          : "Place Order & Pay"}
       </button>
     </div>
   );

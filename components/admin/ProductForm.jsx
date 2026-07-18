@@ -72,6 +72,16 @@ export default function ProductForm({ initialProduct }) {
     setForm((f) => ({ ...f, images: f.images.filter((_, i) => i !== index) }));
   };
 
+  const moveGalleryImage = (index, direction) => {
+    setForm((f) => {
+      const next = [...f.images];
+      const swapWith = index + direction;
+      if (swapWith < 0 || swapWith >= next.length) return f;
+      [next[index], next[swapWith]] = [next[swapWith], next[index]];
+      return { ...f, images: next };
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -371,14 +381,19 @@ export default function ProductForm({ initialProduct }) {
         )}
       </div>
 
+      
       {/* Additional gallery images */}
       <div>
         <label className="text-sm font-medium block mb-2">
           Additional Images
         </label>
+        <p className="text-xs text-gray-400 mb-2">
+          First image in this list shows first in the product gallery. Use ‹ ›
+          to reorder.
+        </p>
         <div className="flex gap-3 flex-wrap">
           {form.images.map((img, i) => (
-            <div key={i} className="relative w-32 h-32">
+            <div key={i} className="relative w-32 h-32 group">
               <img
                 src={img.url}
                 alt=""
@@ -391,6 +406,26 @@ export default function ProductForm({ initialProduct }) {
               >
                 ✕
               </button>
+              <div className="absolute bottom-1 left-1 right-1 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  type="button"
+                  onClick={() => moveGalleryImage(i, -1)}
+                  disabled={i === 0}
+                  className="w-6 h-6 bg-white/90 border rounded text-xs disabled:opacity-30"
+                  title="Move earlier"
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveGalleryImage(i, 1)}
+                  disabled={i === form.images.length - 1}
+                  className="w-6 h-6 bg-white/90 border rounded text-xs disabled:opacity-30"
+                  title="Move later"
+                >
+                  ›
+                </button>
+              </div>
             </div>
           ))}
           <ImageUploader onUploaded={addGalleryImage} folder="products" />

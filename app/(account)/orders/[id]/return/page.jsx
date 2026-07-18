@@ -15,7 +15,7 @@ export default function RequestReturnPage({ params }) {
   const [error, setError] = useState("");
 
   if (isLoading) return <div className="max-w-2xl mx-auto px-4 py-16">Loading...</div>;
-  const order = data?.data;
+  const order = data?.data?.order;
   if (!order) return <div className="max-w-2xl mx-auto px-4 py-16">Order not found.</div>;
 
   const toggleItem = (item) => {
