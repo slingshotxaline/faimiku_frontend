@@ -6,6 +6,7 @@ import {
   useDeleteProductMutation,
 } from "../../../features/products/productsApi";
 import { getEffectivePrice, getProductImage } from "../../../utils/pricing";
+import ExportCsvButton from "../../../components/admin/ExportCsvButton";
 
 const BADGES = [
   { key: "isFlashSale", label: "Flash", className: "bg-red-50 text-red-600" },
@@ -27,12 +28,18 @@ export default function AdminProductsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Products</h1>
-        <Link
-          href="/admin/products/new"
-          className="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
-        >
-          + Add Product
-        </Link>
+        <div className="flex gap-3">
+          <ExportCsvButton
+            path="/products/export.csv"
+            label="Export Products CSV"
+          />
+          <Link
+            href="/admin/products/new"
+            className="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
+          >
+            + Add Product
+          </Link>
+        </div>
       </div>
       {isLoading ? (
         <p className="text-gray-500">Loading...</p>

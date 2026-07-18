@@ -1,3 +1,4 @@
+// frontend/components/admin/AdminSidebar.jsx
 "use client";
 
 import Link from "next/link";
@@ -6,6 +7,7 @@ import { usePathname } from "next/navigation";
 const NAV_ITEMS = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/orders", label: "Orders" },
+  { href: "/admin/customers", label: "Customers" },
   { href: "/admin/products", label: "Products" },
   { href: "/admin/categories", label: "Categories" },
   { href: "/admin/brands", label: "Brands" },
@@ -13,11 +15,11 @@ const NAV_ITEMS = [
   { href: "/admin/shipping", label: "Shipping" },
   { href: "/admin/coupons", label: "Coupons" },
   { href: "/admin/returns", label: "Returns" },
+  { href: "/admin/homepage-sections", label: "Homepage Sections" },
+  { href: "/admin/banners", label: "Banners" },
   { href: "/admin/blog", label: "Blog" },
   { href: "/admin/pages", label: "Pages" },
-  { href: "/admin/banners", label: "Banners" },
   { href: "/admin/activity", label: "Activity Log" },
-  { href: "/admin/homepage-sections", label: "Homepage Sections" },
 ];
 
 export default function AdminSidebar() {
