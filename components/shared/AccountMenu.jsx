@@ -85,6 +85,13 @@ export default function AccountMenu() {
             </Link>
           )}
           <Link
+            href="/profile"
+            onClick={() => setOpen(false)}
+            className="block px-4 py-2 hover:bg-gray-50"
+          >
+            My Profile
+          </Link>
+          <Link
             href="/orders"
             onClick={() => setOpen(false)}
             className="block px-4 py-2 hover:bg-gray-50"
