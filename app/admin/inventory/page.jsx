@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useGetInventoryOverviewQuery } from "../../../features/inventory/inventoryApi";
+import { cleanParams } from "../../../lib/queryParams";
 import StockAdjustModal from "../../../components/admin/StockAdjustModal";
 
 export default function AdminInventoryPage() {
@@ -14,10 +15,9 @@ export default function AdminInventoryPage() {
   );
   const [adjustingRow, setAdjustingRow] = useState(null);
 
-  const { data, isLoading } = useGetInventoryOverviewQuery({
-    search: search || undefined,
-    lowStockOnly,
-  });
+  const { data, isLoading } = useGetInventoryOverviewQuery(
+    cleanParams({ search, lowStockOnly: lowStockOnly || undefined })
+  );
   const rows = data?.data || [];
   const lowStockCount = rows.filter((r) => r.isLowStock).length;
 

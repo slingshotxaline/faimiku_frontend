@@ -4,6 +4,7 @@ import {
   getStrikethroughPrice,
   getProductImage,
 } from "../../utils/pricing";
+import Image from "next/image";
 
 const BADGES = [
   { key: "isFlashSale", label: "⚡ Flash Sale", className: "bg-red-500" },
@@ -29,14 +30,15 @@ export default function ProductCard({ product }) {
           {badge.label}
         </span>
       )}
-      <div className="aspect-square bg-gray-100 overflow-hidden">
-        {image && (
-          <img
-            src={image}
-            alt={product.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        )}
+      
+      <div className="relative aspect-[4/5] bg-gray-100 overflow-hidden">
+        <Image
+          src={image}
+          alt={product.title}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        />
       </div>
       <div className="p-3">
         <h3 className="text-sm font-medium text-gray-900 truncate">
