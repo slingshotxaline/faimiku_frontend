@@ -7,9 +7,11 @@ import AdminGate from "../../components/admin/AdminGate";
 export default function AdminLayout({ children }) {
   return (
     <AdminGate>
-      <div className="flex">
+      <div className="flex h-screen overflow-hidden">
         <AdminSidebar />
-        <main className="flex-1 p-8 max-w-6xl">{children}</main>
+        <main className="flex-1 overflow-auto ">
+          <div className="min-w-max p-8">{children}</div>
+        </main>
         <AdminNotifications />
       </div>
     </AdminGate>
