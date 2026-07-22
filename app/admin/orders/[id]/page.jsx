@@ -403,34 +403,61 @@ function OrderDetail({
         <div className="space-y-6 md:col-span-2">
           <Section title="Items" delay={0}>
             <div className="divide-y divide-gray-50">
-              {order.items.map((item, i) => (
-                <div
-                  key={item._id}
-                  className="flex animate-[fadeUp_.4s_ease-out_backwards] items-center gap-3 rounded-lg py-3 px-2 -mx-2 transition-colors duration-200 first:pt-0 last:pb-0 hover:bg-gray-50"
-                  style={{ animationDelay: `${80 + i * 40}ms` }}
-                >
-                  {item.image ? (
-                    <img
-                      src={item.image}
-                      alt=""
-                      className="h-12 w-12 shrink-0 rounded-lg object-cover ring-1 ring-gray-100 transition-transform duration-200 hover:scale-105"
-                    />
-                  ) : (
-                    <div className="h-12 w-12 shrink-0 rounded-lg bg-gray-50" />
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-gray-900">
-                      {item.title}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      Qty {item.quantity} × ৳{item.price.toLocaleString()}
+              {order.items.map((item, i) => {
+                const variantLabel = [item.color, item.size]
+                  .filter(Boolean)
+                  .join(" / ");
+                return (
+                  <div
+                    key={item._id}
+                    className="flex animate-[fadeUp_.4s_ease-out_backwards] items-center gap-3 rounded-lg py-3 px-2 -mx-2 transition-colors duration-200 first:pt-0 last:pb-0 hover:bg-gray-50"
+                    style={{ animationDelay: `${80 + i * 40}ms` }}
+                  >
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt=""
+                        className="h-12 w-12 shrink-0 rounded-lg object-cover ring-1 ring-gray-100 transition-transform duration-200 hover:scale-105"
+                      />
+                    ) : (
+                      <div className="h-12 w-12 shrink-0 rounded-lg bg-gray-50" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-gray-900">
+                        {item.title}
+                      </p>
+                      {variantLabel && (
+                        <p className="mt-0.5 flex items-center gap-1.5 text-xs text-gray-500">
+                          {item.color && (
+                            <span className="inline-flex items-center gap-1">
+                              <span
+                                className="inline-block h-2.5 w-2.5 rounded-full border border-gray-300"
+                                style={{
+                                  backgroundColor: item.color.toLowerCase(),
+                                }}
+                              />
+                              {item.color}
+                            </span>
+                          )}
+                          {item.color && item.size && <span>·</span>}
+                          {item.size && <span>Size {item.size}</span>}
+                        </p>
+                      )}
+                      {item.sku && (
+                        <p className="mt-0.5 font-mono text-[11px] text-gray-400">
+                          SKU: {item.sku}
+                        </p>
+                      )}
+                      <p className="text-xs text-gray-400">
+                        Qty {item.quantity} × ৳{item.price.toLocaleString()}
+                      </p>
+                    </div>
+                    <p className="shrink-0 text-sm font-medium text-gray-900">
+                      ৳{item.subtotal.toLocaleString()}
                     </p>
                   </div>
-                  <p className="shrink-0 text-sm font-medium text-gray-900">
-                    ৳{item.subtotal.toLocaleString()}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="mt-4 space-y-1.5 border-t border-gray-100 pt-4 text-sm">
               <div className="flex justify-between text-gray-500">
