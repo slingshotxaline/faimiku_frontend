@@ -100,6 +100,10 @@ export default function CartPage() {
         productId: i.productId,
         variantId: i.variantId,
         quantity: i.quantity,
+        // Kept alongside the variantId so the order record still shows the
+        // chosen color/size even if the variant is edited or removed later.
+        color: i.color || undefined,
+        size: i.size || undefined,
       })),
       shippingAddress,
       paymentMethod,
@@ -170,52 +174,78 @@ export default function CartPage() {
       <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
 
       <div className="space-y-4">
-        {items.map((item) => (
-          <div
-            key={`${item.productId}-${item.variantId}`}
-            className="flex items-center gap-4 border-b border-gray-100 pb-4"
-          >
-            {item.image && (
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-16 h-16 rounded object-cover"
-              />
-            )}
-            <div className="flex-1">
-              <p className="font-medium text-gray-900">{item.title}</p>
-              <p className="text-brand-500">৳{item.price.toLocaleString()}</p>
-            </div>
-            <input
-              type="number"
-              min={1}
-              value={item.quantity}
-              onChange={(e) =>
-                dispatch(
-                  updateQuantity({
-                    productId: item.productId,
-                    variantId: item.variantId,
-                    quantity: Number(e.target.value),
-                  })
-                )
-              }
-              className="w-16 border rounded px-2 py-1"
-            />
-            <button
-              onClick={() =>
-                dispatch(
-                  removeItem({
-                    productId: item.productId,
-                    variantId: item.variantId,
-                  })
-                )
-              }
-              className="text-gray-400 hover:text-red-500"
+        {items.map((item) => {
+          const variantLabel = [item.color, item.size]
+            .filter(Boolean)
+            .join(" / ");
+          return (
+            <div
+              key={`${item.productId}-${item.variantId}`}
+              className="flex items-center gap-4 border-b border-gray-100 pb-4"
             >
-              Remove
-            </button>
-          </div>
-        ))}
+              {item.image && (
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-16 h-16 rounded object-cover"
+                />
+              )}
+              <div className="flex-1">
+                <p className="font-medium text-gray-900">{item.title}</p>
+                {variantLabel && (
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {item.color && (
+                      <span className="inline-flex items-center gap-1">
+                        Color:
+                        <span
+                          className="inline-block w-3 h-3 rounded-full border border-gray-300"
+                          style={{ backgroundColor: item.color.toLowerCase() }}
+                        />
+                        {item.color}
+                      </span>
+                    )}
+                    {item.color && item.size && <span className="mx-1.5">|</span>}
+                    {item.size && <span>Size: {item.size}</span>}
+                  </p>
+                )}
+                {item.sku && (
+                  <p className="text-xs text-gray-400 mt-0.5">SKU: {item.sku}</p>
+                )}
+                <p className="text-brand-500 mt-1">
+                  ৳{item.price.toLocaleString()}
+                </p>
+              </div>
+              <input
+                type="number"
+                min={1}
+                value={item.quantity}
+                onChange={(e) =>
+                  dispatch(
+                    updateQuantity({
+                      productId: item.productId,
+                      variantId: item.variantId,
+                      quantity: Number(e.target.value),
+                    })
+                  )
+                }
+                className="w-16 border rounded px-2 py-1"
+              />
+              <button
+                onClick={() =>
+                  dispatch(
+                    removeItem({
+                      productId: item.productId,
+                      variantId: item.variantId,
+                    })
+                  )
+                }
+                className="text-gray-400 hover:text-red-500"
+              >
+                Remove
+              </button>
+            </div>
+          );
+        })}
       </div>
 
       <div className="mt-6 flex gap-2">

@@ -166,7 +166,7 @@ export default function AdminSidebar() {
       </div>
 
       {/* Desktop fixed sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col border-r border-gray-100 bg-white py-6 px-3 lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col border-r border-gray-100 bg-amber-50 py-6 px-3 lg:flex">
         <SidebarContent pathname={pathname} />
       </aside>
 
