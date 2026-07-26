@@ -63,7 +63,10 @@ const NAV_GROUPS = [
   },
   {
     label: "System",
-    items: [{ href: "/admin/activity", label: "Activity Log", icon: Activity }],
+    items: [
+      { href: "/admin/activity", label: "Activity Log", icon: Activity },
+      { href: "/admin/traffic", label: "Site Traffic", icon: Truck },
+    ],
   },
 ];
 

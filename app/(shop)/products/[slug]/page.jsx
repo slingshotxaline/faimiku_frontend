@@ -193,7 +193,7 @@ export default function ProductDetailPage({ params }) {
   const handleBuyNow = () => {
     if (product.hasVariants && !selectedVariant) return;
     dispatch(addItem(buildCartItem()));
-    router.push("/checkout");
+    router.push("/cart");
   };
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";

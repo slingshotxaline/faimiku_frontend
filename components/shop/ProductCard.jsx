@@ -5,6 +5,7 @@ import {
   getProductImage,
 } from "../../utils/pricing";
 import Image from "next/image";
+import { trackClick } from "../../lib/tracking";
 
 const BADGES = [
   { key: "isFlashSale", label: "⚡ Flash Sale", className: "bg-red-500" },
@@ -21,6 +22,7 @@ export default function ProductCard({ product }) {
   return (
     <Link
       href={`/products/${product.slug}`}
+      onClick={() => trackClick(`product_card:${product.slug}`)}
       className="group block rounded-xl overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow relative"
     >
       {badge && (
