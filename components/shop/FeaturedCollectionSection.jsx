@@ -6,6 +6,7 @@ import {
   getStrikethroughPrice,
   getProductImage,
 } from "../../utils/pricing";
+import { trackClick } from "../../lib/tracking";
 
 export default function FeaturedCollectionSection({ section }) {
   const { title, subtitle, banner, products, category } = section;
@@ -33,6 +34,7 @@ export default function FeaturedCollectionSection({ section }) {
         {banner?.image?.url && (
           <Link
             href={viewMoreLink}
+            onClick={() => trackClick(`featured_banner:${section._id}`)}
             className="col-span-2 md:col-span-1 md:row-span-2 relative rounded-lg overflow-hidden group block"
           >
             <img
@@ -62,6 +64,7 @@ export default function FeaturedCollectionSection({ section }) {
 
         <Link
           href={viewMoreLink}
+          onClick={() => trackClick(`featured_banner:${section._id}`)}
           className="relative rounded-lg overflow-hidden group block aspect-square bg-gray-100"
         >
           {overflowProduct && (

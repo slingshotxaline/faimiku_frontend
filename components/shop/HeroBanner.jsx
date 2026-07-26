@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useGetActiveBannersQuery } from "../../features/cms/pagesApi";
+import { trackClick } from "../../lib/tracking";
 
 export default function HeroBanner() {
   const { data, isLoading } = useGetActiveBannersQuery("homepage_hero");
@@ -21,10 +22,13 @@ export default function HeroBanner() {
   if (isLoading || banners.length === 0) return null;
 
   const banner = banners[index];
+  const handleClick = () => trackClick(`hero_banner:${banner._id}`);
 
   const Wrapper = ({ children }) =>
     banner.linkUrl ? (
-      <a href={banner.linkUrl}>{children}</a>
+      <a href={banner.linkUrl} onClick={handleClick}>
+        {children}
+      </a>
     ) : (
       <div>{children}</div>
     );

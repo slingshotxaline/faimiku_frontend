@@ -1,5 +1,6 @@
 import ReduxProvider from "../redux/ReduxProvider";
 import AuthBootstrapMount from "../components/shared/AuthBootstrapMount";
+import PageViewTracker from "../components/shared/PageViewTracker";
 import "../styles/globals.css";
 
 export const metadata = {
@@ -13,6 +14,7 @@ export default function RootLayout({ children }) {
       <body>
         <ReduxProvider>
           <AuthBootstrapMount />
+          <PageViewTracker />
           {children}
         </ReduxProvider>
       </body>
