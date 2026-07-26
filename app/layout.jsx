@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import ReduxProvider from "../redux/ReduxProvider";
 import AuthBootstrapMount from "../components/shared/AuthBootstrapMount";
 import PageViewTracker from "../components/shared/PageViewTracker";
@@ -14,7 +15,11 @@ export default function RootLayout({ children }) {
       <body>
         <ReduxProvider>
           <AuthBootstrapMount />
-          <PageViewTracker />
+
+          <Suspense fallback={null}>
+            <PageViewTracker />
+          </Suspense>
+
           {children}
         </ReduxProvider>
       </body>
