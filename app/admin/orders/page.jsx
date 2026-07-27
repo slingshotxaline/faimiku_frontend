@@ -32,6 +32,55 @@ const STATUSES = [
   "failed",
 ];
 
+// Payment status values that actually exist on the Order model
+// (paymentStatus field) — separate from order.status above.
+const PAYMENT_STATUSES = ["paid", "pending", "refunded", "failed"];
+const PAYMENT_META = {
+  paid: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  pending: "border-amber-200 bg-amber-50 text-amber-700",
+  refunded: "border-rose-200 bg-rose-50 text-rose-700",
+  failed: "border-red-200 bg-red-50 text-red-700",
+};
+
+function FilterTabs({ label, options, value, onChange, meta }) {
+  return (
+    <div>
+      <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-gray-400">
+        {label}
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        <button
+          onClick={() => onChange("all")}
+          className={`rounded-full border px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
+            value === "all"
+              ? "border-gray-900 bg-gray-900 text-white"
+              : "border-gray-200 text-gray-500 hover:bg-gray-50"
+          }`}
+        >
+          All
+        </button>
+        {options.map((opt) => {
+          const active = value === opt;
+          const optClasses = meta?.[opt] || "border-gray-200 text-gray-500";
+          return (
+            <button
+              key={opt}
+              onClick={() => onChange(opt)}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
+                active
+                  ? "border-gray-900 bg-gray-900 text-white"
+                  : `${optClasses} hover:opacity-75`
+              }`}
+            >
+              {(STATUS_META[opt]?.label ?? opt).replace(/_/g, " ")}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function StatusSelect({ order, updatingId, onChange }) {
   const meta = STATUS_META[order.status] || STATUS_META.pending;
   const isUpdating = updatingId === order._id;
@@ -119,13 +168,26 @@ function SkeletonRows() {
 }
 
 export default function AdminOrdersPage() {
-  const { data, isLoading } = useGetAllOrdersQuery();
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [paymentFilter, setPaymentFilter] = useState("all");
+
+  const queryParams = useMemo(
+    () => ({
+      ...(statusFilter !== "all" && { status: statusFilter }),
+      ...(paymentFilter !== "all" && { paymentStatus: paymentFilter }),
+    }),
+    [statusFilter, paymentFilter]
+  );
+
+  const { data, isLoading, isFetching } = useGetAllOrdersQuery(queryParams);
   const [updateStatus] = useUpdateOrderStatusMutation();
   const [updatingId, setUpdatingId] = useState(null);
   const [rowsIn, setRowsIn] = useState(false);
 
   const orders = data?.data || [];
 
+  // Status breakdown reflects the currently filtered order set (e.g. if
+  // Payment = Paid is active, these counts are "paid orders by status").
   const statusCounts = useMemo(() => {
     const counts = Object.fromEntries(STATUSES.map((s) => [s, 0]));
     for (const order of orders) {
@@ -135,13 +197,13 @@ export default function AdminOrdersPage() {
   }, [orders]);
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || isFetching) {
       setRowsIn(false);
       return;
     }
     const t = setTimeout(() => setRowsIn(true), 30);
     return () => clearTimeout(t);
-  }, [isLoading]);
+  }, [isLoading, isFetching]);
 
   async function handleStatusChange(order, newStatus) {
     setUpdatingId(order._id);
@@ -155,6 +217,8 @@ export default function AdminOrdersPage() {
       setUpdatingId(null);
     }
   }
+
+  const showSkeleton = isLoading || (isFetching && orders.length === 0);
 
   return (
     <div>
@@ -178,12 +242,12 @@ export default function AdminOrdersPage() {
             label="Total Orders"
             value={orders.length}
             accent="sky"
-            loading={isLoading}
+            loading={showSkeleton}
             index={0}
           />
         </div>
         <div className="lg:col-span-3">
-          {isLoading ? (
+          {showSkeleton ? (
             <SkeletonStats />
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
@@ -200,20 +264,39 @@ export default function AdminOrdersPage() {
         </div>
       </div>
 
-      {isLoading ? (
+      {showSkeleton ? (
         <SkeletonRows />
       ) : orders.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 py-16 text-center">
           <PackageSearch className="h-10 w-10 text-gray-300" />
           <p className="mt-3 text-sm font-medium text-gray-500">
-            No orders yet
+            No orders match these filters
           </p>
           <p className="mt-1 text-xs text-gray-400">
-            New orders will show up here as they come in.
+            Try a different Payment or Status filter.
           </p>
         </div>
       ) : (
         <>
+          {/* Filters */}
+          <div className="mb-6 flex flex-col gap-4 rounded-2xl border border-gray-100 p-4 sm:flex-row sm:flex-wrap sm:items-start sm:gap-8">
+            <FilterTabs
+              label="Payment"
+              options={PAYMENT_STATUSES}
+              value={paymentFilter}
+              onChange={setPaymentFilter}
+              meta={PAYMENT_META}
+            />
+            <FilterTabs
+              label="Order Status"
+              options={STATUSES}
+              value={statusFilter}
+              onChange={setStatusFilter}
+              meta={Object.fromEntries(
+                STATUSES.map((s) => [s, STATUS_META[s]?.classes])
+              )}
+            />
+          </div>
           {/* Mobile: stacked cards */}
           <div className="grid gap-3 md:hidden">
             {orders.map((order, i) => (
