@@ -33,6 +33,8 @@ export const apiSlice = createApi({
     "Inventory",
     "ShippingZone",
     "HomepageSection",
+    "DashboardSummary",
+    
   ],
   endpoints: () => ({}),
 });

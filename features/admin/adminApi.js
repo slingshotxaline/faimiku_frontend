@@ -3,13 +3,16 @@ import { apiSlice } from "../../redux/apiSlice";
 export const adminApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getDashboardSummary: builder.query({
-      query: () => "/analytics/summary",
+      query: (params) => ({ url: "/analytics/summary", params }),
+      providesTags: ["DashboardSummary"],
     }),
     getSalesAnalytics: builder.query({
       query: (params) => ({ url: "/analytics/sales", params }),
+      providesTags: ["DashboardSummary"],
     }),
     getProductAnalytics: builder.query({
       query: () => "/analytics/products",
+      providesTags: ["DashboardSummary"],
     }),
     getAllOrders: builder.query({
       query: (params) => ({ url: "/orders", params }),
@@ -21,7 +24,7 @@ export const adminApi = apiSlice.injectEndpoints({
         method: "PATCH",
         body: { status, note },
       }),
-      invalidatesTags: ["Order"],
+      invalidatesTags: ["Order", "DashboardSummary"],
     }),
     getCoupons: builder.query({
       query: () => "/coupons",
