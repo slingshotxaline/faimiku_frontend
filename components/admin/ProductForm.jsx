@@ -122,7 +122,7 @@ export default function ProductForm({ initialProduct }) {
     title: initialProduct?.title || "",
     slug: initialProduct?.slug || "",
     category: initialProduct?.category?._id || "",
-    brand: initialProduct?.brand?._id || "",
+    // brand: initialProduct?.brand?._id || "",
 
     oldPrice: initialProduct?.oldPrice || "",
     basePrice: initialProduct?.basePrice || "",
@@ -145,7 +145,7 @@ export default function ProductForm({ initialProduct }) {
   const [error, setError] = useState("");
 
   const categories = categoriesData?.data || [];
-  const brands = brandsData?.data || [];
+  // const brands = brandsData?.data || [];
   const isSaving = isCreating || isUpdating;
 
   const handleTitleChange = (title) => {
@@ -269,7 +269,7 @@ export default function ProductForm({ initialProduct }) {
                   .
                 </p>
               </div>
-              <div>
+              {/* <div>
                 <label className={labelClasses}>Brand</label>
                 <select
                   value={form.brand}
@@ -294,7 +294,7 @@ export default function ProductForm({ initialProduct }) {
                   </a>
                   .
                 </p>
-              </div>
+              </div> */}
             </div>
           </Card>
 

@@ -44,7 +44,7 @@ const NAV_GROUPS = [
     items: [
       { href: "/admin/products", label: "Products", icon: Package },
       { href: "/admin/categories", label: "Categories", icon: FolderTree },
-      { href: "/admin/brands", label: "Brands", icon: Tag },
+      // { href: "/admin/brands", label: "Brands", icon: Tag },
       { href: "/admin/inventory", label: "Inventory", icon: Boxes },
     ],
   },
