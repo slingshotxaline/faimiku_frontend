@@ -99,11 +99,8 @@ export default function CartPage() {
       items: items.map((i) => ({
         productId: i.productId,
         variantId: i.variantId,
+        size: i.size,
         quantity: i.quantity,
-        // Kept alongside the variantId so the order record still shows the
-        // chosen color/size even if the variant is edited or removed later.
-        color: i.color || undefined,
-        size: i.size || undefined,
       })),
       shippingAddress,
       paymentMethod,
@@ -204,12 +201,16 @@ export default function CartPage() {
                         {item.color}
                       </span>
                     )}
-                    {item.color && item.size && <span className="mx-1.5">|</span>}
+                    {item.color && item.size && (
+                      <span className="mx-1.5">|</span>
+                    )}
                     {item.size && <span>Size: {item.size}</span>}
                   </p>
                 )}
                 {item.sku && (
-                  <p className="text-xs text-gray-400 mt-0.5">SKU: {item.sku}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    SKU: {item.sku}
+                  </p>
                 )}
                 <p className="text-brand-500 mt-1">
                   ৳{item.price.toLocaleString()}
