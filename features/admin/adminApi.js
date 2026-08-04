@@ -14,6 +14,27 @@ export const adminApi = apiSlice.injectEndpoints({
       query: () => "/analytics/products",
       providesTags: ["DashboardSummary"],
     }),
+    getDailyTraffic: builder.query({
+      query: (days = 14) => ({
+        url: "/analytics/traffic/daily",
+        params: { days },
+      }),
+      providesTags: ["DashboardSummary"],
+    }),
+    getDeviceBreakdown: builder.query({
+      query: (days = 30) => ({
+        url: "/analytics/traffic/devices",
+        params: { days },
+      }),
+      providesTags: ["DashboardSummary"],
+    }),
+    getTopPages: builder.query({
+      query: ({ days = 30, limit = 8 } = {}) => ({
+        url: "/analytics/traffic/top-pages",
+        params: { days, limit },
+      }),
+      providesTags: ["DashboardSummary"],
+    }),
     getAllOrders: builder.query({
       query: (params) => ({ url: "/orders", params }),
       providesTags: ["Order"],
@@ -48,6 +69,9 @@ export const {
   useGetDashboardSummaryQuery,
   useGetSalesAnalyticsQuery,
   useGetProductAnalyticsQuery,
+  useGetDailyTrafficQuery,
+  useGetDeviceBreakdownQuery,
+  useGetTopPagesQuery,
   useGetAllOrdersQuery,
   useUpdateOrderStatusMutation,
   useGetCouponsQuery,
