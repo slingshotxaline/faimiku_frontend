@@ -52,6 +52,8 @@ const STATUS_TABS = [
   { key: "inactive", label: "Inactive" },
 ];
 
+const PAGE_SIZE = 10;
+
 function StatusPill({ active }) {
   return (
     <span
@@ -136,13 +138,58 @@ function SkeletonRows() {
   );
 }
 
+function Pagination({ page, totalPages, onChange }) {
+  if (totalPages <= 1) return null;
+
+  const pages = [];
+  for (let i = 1; i <= totalPages; i++) pages.push(i);
+
+  return (
+    <div className="mt-4 flex items-center justify-between gap-3 flex-wrap">
+      <p className="text-xs text-gray-400">
+        Page {page} of {totalPages}
+      </p>
+      <div className="flex items-center gap-1.5">
+        <button
+          onClick={() => onChange(Math.max(1, page - 1))}
+          disabled={page === 1}
+          className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
+        >
+          Prev
+        </button>
+        {pages.map((p) => (
+          <button
+            key={p}
+            onClick={() => onChange(p)}
+            className={`h-8 w-8 rounded-lg text-sm font-medium border ${
+              p === page
+                ? "border-brand-500 bg-brand-500 text-white"
+                : "border-gray-200 text-gray-600 hover:bg-gray-50"
+            }`}
+          >
+            {p}
+          </button>
+        ))}
+        <button
+          onClick={() => onChange(Math.min(totalPages, page + 1))}
+          disabled={page === totalPages}
+          className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminProductsPage() {
-  const { data, isLoading } = useGetProductsQuery({ limit: 50 });
+  const { data, isLoading } = useGetProductsQuery({ limit: 200 });
   const [deleteProduct] = useDeleteProductMutation();
   const [rowsIn, setRowsIn] = useState(false);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [page, setPage] = useState(1);
 
   const products = data?.data || [];
 
@@ -178,6 +225,22 @@ export default function AdminProductsPage() {
     });
   }, [products, search, statusFilter, categoryFilter]);
 
+  // Reset to page 1 whenever the filtered set changes shape (new search/filter).
+  useEffect(() => {
+    setPage(1);
+  }, [search, statusFilter, categoryFilter]);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / PAGE_SIZE)
+  );
+  const safePage = Math.min(page, totalPages);
+  const paginatedProducts = useMemo(
+    () =>
+      filteredProducts.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
+    [filteredProducts, safePage]
+  );
+
   useEffect(() => {
     if (isLoading) {
       setRowsIn(false);
@@ -185,7 +248,7 @@ export default function AdminProductsPage() {
     }
     const t = setTimeout(() => setRowsIn(true), 30);
     return () => clearTimeout(t);
-  }, [isLoading, filteredProducts.length]);
+  }, [isLoading, paginatedProducts.length]);
 
   const handleDeactivate = (p) => {
     if (confirm(`Deactivate "${p.title}"?`)) deleteProduct(p._id);
@@ -348,7 +411,7 @@ export default function AdminProductsPage() {
         <>
           {/* Mobile: stacked cards */}
           <div className="grid gap-3 lg:hidden">
-            {filteredProducts.map((p, i) => (
+            {paginatedProducts.map((p, i) => (
               <div
                 key={p._id}
                 className={`rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-500 ease-out ${
@@ -417,7 +480,7 @@ export default function AdminProductsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredProducts.map((p, i) => (
+                  {paginatedProducts.map((p, i) => (
                     <tr
                       key={p._id}
                       className={`border-b border-gray-50 transition-colors duration-500 last:border-0 hover:bg-gray-50/60 ${
@@ -481,6 +544,12 @@ export default function AdminProductsPage() {
               </table>
             </div>
           </div>
+
+          <Pagination
+            page={safePage}
+            totalPages={totalPages}
+            onChange={setPage}
+          />
         </>
       )}
     </div>
