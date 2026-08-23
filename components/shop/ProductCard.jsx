@@ -23,6 +23,7 @@ export default function ProductCard({ product }) {
     <Link
       href={`/products/${product.slug}`}
       onClick={() => trackClick(`product_card:${product.slug}`)}
+      prefetch={false}
       className="group block rounded-xl overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow relative"
     >
       {badge && (

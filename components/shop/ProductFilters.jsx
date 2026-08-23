@@ -151,7 +151,7 @@ export default function ProductFilters({ filters, onChange, onClose }) {
         )}
 
         {/* Brand */}
-        {!brandsError && brands.length > 0 && (
+        {/* {!brandsError && brands.length > 0 && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Brand
@@ -169,7 +169,7 @@ export default function ProductFilters({ filters, onChange, onClose }) {
               ))}
             </select>
           </div>
-        )}
+        )} */}
 
         {/* Price range */}
         <div>
