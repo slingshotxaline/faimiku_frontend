@@ -6,12 +6,11 @@ import {
   getStrikethroughPrice,
   getProductImage,
 } from "../../utils/pricing";
+import { buildSectionShowMoreLink } from "../../utils/homepageSectionLink";
 
 export default function FeaturedCollectionSection({ section }) {
-  const { title, subtitle, banner, products, category } = section;
-  const viewMoreLink =
-    banner?.linkUrl ||
-    (category ? `/products?category=${category._id || category}` : "/products");
+  const { title, subtitle, banner, products } = section;
+  const viewMoreLink = banner?.linkUrl || buildSectionShowMoreLink(section);
 
   const gridProducts = products.slice(0, 7);
   const overflowProduct = products[7];
@@ -111,5 +110,3 @@ function FeaturedTile({ product }) {
     </Link>
   );
 }
-
-

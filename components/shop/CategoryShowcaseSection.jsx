@@ -23,7 +23,7 @@ export default function CategoryShowcaseSection({ section }) {
         {categories.map((category) => (
           <Link
             key={category._id}
-            href={`/products?category=${category._id}`}
+            href={`/products?category=${category.slug || category._id}`}
             onClick={() => trackClick(`category_tile:${category._id}`)}
             className="relative aspect-[4/3] rounded-xl overflow-hidden group block bg-gradient-to-br from-brand-50 to-gray-100"
           >

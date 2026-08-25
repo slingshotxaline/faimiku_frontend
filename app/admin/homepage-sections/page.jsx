@@ -26,6 +26,7 @@ import {
   Trash2,
   Loader2,
   Rows3,
+  Link2,
 } from "lucide-react";
 
 const PROMO_OPTIONS = [
@@ -74,6 +75,7 @@ const emptyForm = {
   layout: "grid",
   banner: { image: null, title: "", subtitle: "", linkUrl: "" },
   categories: [],
+  showMoreLink: "",
 };
 
 const inputClasses =
@@ -190,6 +192,7 @@ export default function AdminHomepageSectionsPage() {
         linkUrl: "",
       },
       categories: section.categories || [],
+      showMoreLink: section.showMoreLink || "",
     });
     setError("");
     setSuccess(false);
@@ -227,11 +230,17 @@ export default function AdminHomepageSectionsPage() {
       return;
     }
 
+    const trimmedShowMoreLink = form.showMoreLink.trim();
+
     const payload = {
       title: form.title,
       subtitle: form.subtitle,
       sortOrder: Number(form.sortOrder),
       layout: form.layout,
+      // Manual "Show More" destination override, e.g. "/products?category=panjabi".
+      // Sent as "" (not omitted) so clearing the field on an edit actually clears
+      // it server-side too, instead of leaving the old value in place.
+      showMoreLink: trimmedShowMoreLink,
       ...(form.layout === "featured" && { banner: form.banner }),
       ...(form.layout === "categories"
         ? { categories: form.categories.map((c) => c._id) }
@@ -564,6 +573,27 @@ export default function AdminHomepageSectionsPage() {
             </FormCard>
           )}
 
+          <FormCard
+            title="Show More Link"
+            description={
+              form.sourceType === "custom" && form.layout !== "categories"
+                ? 'Custom Pick sections have no automatic filter to fall back on — set this so "Show More" goes somewhere useful, e.g. "/products?category=panjabi".'
+                : 'Optional. Leave blank to auto-link based on the category/promo above. Set this to send "Show More" somewhere specific instead, e.g. "/products?category=panjabi" or "/products?hotSale=true".'
+            }
+          >
+            <div className="relative">
+              <Link2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <input
+                placeholder="/products?category=panjabi"
+                value={form.showMoreLink}
+                onChange={(e) =>
+                  setForm({ ...form, showMoreLink: e.target.value })
+                }
+                className={`${inputClasses} pl-9`}
+              />
+            </div>
+          </FormCard>
+
           <div className="max-w-[10rem]">
             <label className={labelClasses}>Position on page</label>
             <input
@@ -674,6 +704,12 @@ export default function AdminHomepageSectionsPage() {
                         {" · Position "}
                         {section.sortOrder}
                       </p>
+                      {section.showMoreLink && (
+                        <p className="mt-1 inline-flex items-center gap-1 truncate text-[11px] text-gray-400">
+                          <Link2 className="h-3 w-3 shrink-0" />
+                          {section.showMoreLink}
+                        </p>
+                      )}
                     </div>
                     <button
                       onClick={() =>
