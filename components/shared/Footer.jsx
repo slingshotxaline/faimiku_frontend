@@ -10,9 +10,9 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-gray-100 mt-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div className="col-span-2 md:col-span-1">
-          <Link href="/" className="shrink-0">
+      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-6 gap-8">
+        <div className="flex flex-col">
+          <Link href="/" className="shrink-0 -ml-2">
             <Image
               src="/assets/logo/logo.png"
               alt="Enterprise Store"
@@ -29,7 +29,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Shop</h3>
+          <h3 className="text-md font-semibold text-gray-900 mb-3">Shop</h3>
           <ul className="space-y-2 text-sm text-gray-500">
             <li>
               <Link href="/products" className="hover:text-brand-500">
@@ -50,7 +50,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">
+          <h3 className="text-md font-semibold text-gray-900 mb-3">
             Customer Service
           </h3>
           <ul className="space-y-2 text-sm text-gray-500">
@@ -78,7 +78,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Company</h3>
+          <h3 className="text-md font-semibold text-gray-900 mb-3">Company</h3>
           <ul className="space-y-2 text-sm text-gray-500">
             <li>
               <Link href="/about" className="hover:text-brand-500">
@@ -101,6 +101,30 @@ export default function Footer() {
               </Link>
             </li>
           </ul>
+        </div>
+
+        <div className="md:col-span-2">
+          <h3 className="text-md font-semibold text-gray-900 mb-3">Find Us</h3>
+          <div className="w-full overflow-hidden rounded-lg border border-gray-200 shadow-sm">
+            <iframe
+              title="Store location"
+              src="https://www.google.com/maps?q=Dhaka,Bangladesh&output=embed"
+              width="100%"
+              height="160"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="block"
+            />
+          </div>
+          <a
+            href="https://www.google.com/maps?q=Dhaka,Bangladesh"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-block text-sm text-brand-500 hover:underline"
+          >
+            Get Directions
+          </a>
         </div>
       </div>
 
