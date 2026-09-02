@@ -374,7 +374,11 @@ export default function CartPage() {
 
         <h2 className="font-medium pt-2">Payment Method</h2>
         <div className="flex gap-3">
-          {["cod", "bkash", "sslcommerz"].map((method) => (
+          {[
+            "cod",
+            // "bkash",
+            // "sslcommerz",
+          ].map((method) => (
             <button
               key={method}
               onClick={() => setPaymentMethod(method)}
