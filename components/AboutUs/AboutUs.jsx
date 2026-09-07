@@ -23,7 +23,7 @@ const features = [
 export default function AboutUs() {
   return (
     <section className="w-full bg-white">
-      <div className="mx-auto max-w-7xl px-6 py-16 md:py-24 lg:px-8">
+      <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
         {/* Row 1: Image + Who We Are */}
         <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
           <div className="relative h-72 w-full overflow-hidden rounded-2xl shadow-sm sm:h-96 md:h-[420px]">
@@ -44,31 +44,32 @@ export default function AboutUs() {
 
             <div className="mt-6 space-y-5 text-base leading-relaxed text-gray-600">
               <p>
-                Bangladesh is more than the world&apos;s garment factory; it
-                is the heart of global fashion. For decades, our hands have
-                stitched the very pieces worn across the West. Every
-                &ldquo;Made in Bangladesh&rdquo; label abroad is a reminder of
-                our unmatched strength in fashion.
-              </p>
-              <p>However, a paradox remains at home.</p>
-              <p>
-                We create for the world, yet the world of fashion rarely
-                feels as though it was meant for us. Our factories craft the
-                very clothes that set global trends, yet our locals have to
-                look abroad to access them.
-              </p>
-              <p className="font-medium text-gray-900">
-                Buri Mall is here to shorten that journey.
+                At FAIMIKU, we believe Bangladesh is so much more than just the
+                world’s garment factory—it’s the beating heart of global
+                fashion. For decades, the incredible craftsmanship of our people
+                has defined wardrobes across the globe. Every “Made in
+                Bangladesh” label is a testament to our unmatched skill in the
+                fashion industry.
               </p>
               <p>
-                We bring the brands that inspire your style, confidence, &amp;
-                identity directly to Bangladesh. No more detours. The same
-                fabrics, the same standards, the same global trends, finally
-                here at home.
+                But we noticed a missing piece in the puzzle: while we create
+                for the world, it often feels like those premium styles aren't
+                meant for us to enjoy here at home. We craft the pieces that set
+                international trends, yet we often have to look abroad to find
+                that same level of quality for ourselves.
               </p>
-              <p className="font-medium text-gray-900">
+              <p>FAIMIKU is here to change the narrative.</p>
+              <p>
+                We are dedicated to bringing the premium fabrics, timeless
+                silhouettes, and global trends you love directly to you. No more
+                looking overseas for that perfect, comfortable fit. We are
+                bringing the same luxurious feel and elevated standards right to
+                your doorstep.
+              </p>
+              <p>It’s time to set the trends, not just chase them.</p>
+              {/* <p className="font-medium text-gray-900">
                 It&apos;s time to set the trends, not chase them.
-              </p>
+              </p> */}
             </div>
           </div>
         </div>
@@ -82,16 +83,20 @@ export default function AboutUs() {
 
             <div className="mt-6 space-y-5 text-base leading-relaxed text-gray-600">
               <p>
-                We are dedicated to providing our customers with the best
-                possible shopping experience. From our carefully curated
-                collections to our responsive customer support team, we
-                strive for excellence in everything we do.
+                We are passionate about making you feel just as good as you
+                look. Our commitment to you goes beyond just clothing; it’s
+                about providing a seamless, premium shopping experience from
+                start to finish.
               </p>
               <p>
-                We believe in transparency, integrity, and building lasting
-                relationships with our customers. Your satisfaction is our
-                top priority, and we&apos;re always looking for ways to
-                improve and exceed your expectations.
+                From our carefully curated, versatile collections—designed for
+                all-day comfort and effortless style—to our friendly and
+                responsive customer support, we strive for excellence in every
+                detail. We believe in building genuine, lasting relationships
+                with our community through transparency and trust. Your
+                confidence and satisfaction are what drive us, and we are
+                constantly looking for new ways to elevate your style and exceed
+                your expectations.
               </p>
             </div>
           </div>
